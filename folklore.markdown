@@ -90,6 +90,8 @@ I find it regrettable that the book's editors chose to include this particular e
 
 [Originally published](http://blog.institut-agile.fr/2010/11/folklore-ou-fait-scientifique-comment.html) on 11/1/2010, translated to English on 1/5/2011.
 
+[I'm on Twitter. Drop me a line.](http://twitter.com/Morendil)
+
 ### Institut Agile
 
 Institut Agile is a France-based independent organization funded by a consortium of businesses with a strategic interest in Agile approaches.
