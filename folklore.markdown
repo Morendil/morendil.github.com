@@ -33,7 +33,7 @@ At the endpoint of this process of acceptance of a fact, it becomes stripped of 
 
 Obviously, what makes this scheme of citations a process properly called scientific is its empirical and conversational character; the erosion of modalities is not inexorable, a widely cited preliminary study may well be overturned by later work.
 
-Another possibility is that the initial statement, the claimed "fact", never quite rids itself of all modalities. It remains spoiled by hedges and suspicions, and if no one can muster enough interest to follow it up in further publications, if may simply be forgotten. In the best case, that is - for in the worst case it may also persist in the collective discourse as **folklore**, myth or [misconception](http://en.wikipedia.org/wiki/List_of_common_misconceptions#Science).
+Another possibility is that the initial statement, the claimed "fact", never quite rids itself of all modalities. It remains spoiled by hedges and suspicions, and if no one can muster enough interest to follow it up in further publications, it may simply be forgotten. In the best case, that is - for in the worst case it may also persist in the collective discourse as **folklore**, myth or [misconception](http://en.wikipedia.org/wiki/List_of_common_misconceptions#Science).
 
 ## So what is known about programmer productivity?
 
