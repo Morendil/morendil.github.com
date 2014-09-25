@@ -1,0 +1,202 @@
+<!DOCTYPE html><html><head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Probability Calculator - jsFiddle demo</title>
+  
+  <script type="text/javascript" src="/js/lib/dummy.js"></script>
+  
+  
+  
+  
+  <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+  
+    
+      <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.4/angular.min.js"></script><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak{display:none;}ng\:form{display:block;}</style>
+    
+  
+    
+      <script type="text/javascript" src="https://rawgithub.com/prajwalkman/angular-slider/master/angular-slider.min.js"></script><style type="text/css"></style>
+    
+  
+    
+      <link rel="stylesheet" type="text/css" href="https://rawgithub.com/prajwalkman/angular-slider/master/angular-slider.min.css">
+    
+  
+    
+      <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+    
+  
+    
+      <link rel="stylesheet" type="text/css" href="http://twitter.github.io/bootstrap/assets/css/bootstrap.css">
+    
+  
+  <style type="text/css">
+    .axis path, .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+.line {
+    fill: none;
+    stroke: steelblue;
+    stroke-width: 1.5px;
+}
+.vertex {
+    fill: #1f77b4;
+    fill-opacity: 1;
+    stroke: #999;
+    stroke-opacity: .5;
+}
+  </style>
+  
+
+
+<script type="text/javascript">//<![CDATA[ 
+
+var app = angular.module('app', ['uiSlider']);
+
+function km(days, day, prob) {
+    daily = 1 - Math.pow(1.0 - prob / 100, 1.0 / days);
+    bottom = Math.pow(1 - daily, days) / days;
+    top_terms = d3.range(1, days - day + 2).map(function (i) {
+        return daily * Math.pow(1 - daily, days - i) / (days + 1 - i);
+    });
+    top_sum = d3.sum(top_terms);
+    return (top_sum / (top_sum + bottom)) * 100;
+};
+
+function Controller($scope) {
+    $scope.probability = 75;
+    $scope.days = 10;
+
+    function refresh() {
+        days = parseInt($scope.days);
+        prob = parseInt($scope.probability);
+        data = d3.range(1, days + 1).map(function (i) {
+            return {
+                day: i,
+                prob: km(days, i, prob)
+            }
+        });
+        
+        x.domain([1, days]);
+        d3x.call(xAxis);
+        
+        svg.select("path.line")
+            .attr("d", line(data));
+        
+        svg.selectAll("circle.vertex")
+            .remove();
+        
+        svg.selectAll("circle.vertex")
+            .data(data)
+        .enter().append("circle")
+            .attr("cx", function (d, i) {return x(d.day)})
+            .attr("cy", function (d, i) {return y(d.prob)})
+            .attr("r", 2)
+            .attr("class", "vertex")
+            .append("title")
+            .text(function (d, i) {
+                return "Day " + d.day + " : " + Math.round(d.prob) + "%";
+            });
+    }
+
+    $scope.$watch('days', refresh, true);
+    $scope.$watch('probability', refresh, true);
+}
+//]]>  
+
+</script>
+
+
+</head>
+<body ng-app="app" class="ng-scope">
+  <div class="container">
+
+    <h1>Probability Calculator</h1>
+
+<p>
+This computes the "optimal" (as opposed to "honest") probability estimate that will minimize your averaged daily Brier score on a "contingent stopping" question, i.e. one which closes when an event is realized.
+</p>
+<p>
+The calculator takes two inputs:</p>
+<ol>
+<li>the number of days until the event's deadline <b>when the question opened</b></li>
+<li>your best estimate <b>at that time</b> of the overall probability over that entire period</li>
+</ol>
+<p>The calculator will assume that the event has equal and independent probability of happening on any given day, and will infer that daily probability from the overall probability you gave.
+</p>
+<p>
+The calculator will then compute for all days until the deadline the probability forecast that minimizes your Brier score, at least "in theory" (that is, if a number of assumptions are verified, none of which will be spelled out here).
+</p>
+
+<div ng-controller="Controller" class="ng-scope">
+    <label for="prob">Starting probability</label>
+    <slider style="width:40%" floor="1" ceiling="99" step="1" precision="0" ng-model="probability" id="prob" class="ng-isolate-scope ng-scope ng-pristine ng-valid"><span class="bar"></span><span class="pointer" style="left: 117.040816326531px;"></span><span ng-bind-html-unsafe="translate({value: floor})" class="bubble limit ng-binding" style="opacity: 1;">1</span><span ng-bind-html-unsafe="translate({value: ceiling})" class="bubble limit ng-binding" style="left: 159px; opacity: 1;">99</span><span class="bubble ng-binding" ng-bind-html-unsafe="translate({value: ngModel})" style="left: 119px;">75</span></slider>
+    <label for="days">Total number of days</label>
+    <slider style="width:40%" floor="2" ceiling="365" step="1" precision="0" ng-model="days" id="days" class="ng-isolate-scope ng-scope ng-pristine ng-valid"><span class="bar"></span><span class="pointer" style="left: 3.41597796143251px;"></span><span ng-bind-html-unsafe="translate({value: floor})" class="bubble limit ng-binding" style="opacity: 0;">2</span><span ng-bind-html-unsafe="translate({value: ceiling})" class="bubble limit ng-binding" style="left: 152px; opacity: 1;">365</span><span class="bubble ng-binding" ng-bind-html-unsafe="translate({value: ngModel})" style="left: 5px;">10</span></slider>
+</div>
+<svg width="760" height="300"><g transform="translate(50,20)"><g class="x axis" transform="translate(0,250)"><g class="tick" transform="translate(0,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">1</text></g><g class="tick" transform="translate(76.66666666666666,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">2</text></g><g class="tick" transform="translate(153.33333333333331,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">3</text></g><g class="tick" transform="translate(230,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">4</text></g><g class="tick" transform="translate(306.66666666666663,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">5</text></g><g class="tick" transform="translate(383.33333333333337,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">6</text></g><g class="tick" transform="translate(460,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">7</text></g><g class="tick" transform="translate(536.6666666666666,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">8</text></g><g class="tick" transform="translate(613.3333333333333,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">9</text></g><g class="tick" transform="translate(690,0)" style="opacity: 1;"><line y2="6" x2="0"></line><text y="9" x="0" dy=".71em" style="text-anchor: middle;">10</text></g><path class="domain" d="M0,6V0H690V6"></path></g><g class="y axis"><g class="tick" transform="translate(0,250)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">0</text></g><g class="tick" transform="translate(0,225)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">10</text></g><g class="tick" transform="translate(0,200)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">20</text></g><g class="tick" transform="translate(0,175)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">30</text></g><g class="tick" transform="translate(0,150)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">40</text></g><g class="tick" transform="translate(0,125)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">50</text></g><g class="tick" transform="translate(0,100)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">60</text></g><g class="tick" transform="translate(0,74.99999999999997)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">70</text></g><g class="tick" transform="translate(0,50)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">80</text></g><g class="tick" transform="translate(0,25)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">90</text></g><g class="tick" transform="translate(0,0)" style="opacity: 1;"><line x2="-6" y2="0"></line><text x="-9" y="0" dy=".32em" style="text-anchor: end;">100</text></g><path class="domain" d="M-6,0H0V250H-6"></path></g><path class="line" d="M0,19.958573014979834L76.66666666666666,34.023010884129576L153.33333333333331,49.07616534194247L230,66.031621472551L306.66666666666663,85.26553402868728L383.33333333333337,106.96451816788394L460,131.18363494702564L536.6666666666666,157.85343872943037L613.3333333333333,186.77809096227838L690,217.63764082403102"></path><circle cx="0" cy="19.958573014979834" r="2" class="vertex"><title>Day 1 : 92%</title></circle><circle cx="76.66666666666666" cy="34.023010884129576" r="2" class="vertex"><title>Day 2 : 86%</title></circle><circle cx="153.33333333333331" cy="49.07616534194247" r="2" class="vertex"><title>Day 3 : 80%</title></circle><circle cx="230" cy="66.031621472551" r="2" class="vertex"><title>Day 4 : 74%</title></circle><circle cx="306.66666666666663" cy="85.26553402868728" r="2" class="vertex"><title>Day 5 : 66%</title></circle><circle cx="383.33333333333337" cy="106.96451816788394" r="2" class="vertex"><title>Day 6 : 57%</title></circle><circle cx="460" cy="131.18363494702564" r="2" class="vertex"><title>Day 7 : 48%</title></circle><circle cx="536.6666666666666" cy="157.85343872943037" r="2" class="vertex"><title>Day 8 : 37%</title></circle><circle cx="613.3333333333333" cy="186.77809096227838" r="2" class="vertex"><title>Day 9 : 25%</title></circle><circle cx="690" cy="217.63764082403102" r="2" class="vertex"><title>Day 10 : 13%</title></circle></g></svg></div>
+
+<script>
+    var margin = {
+        top: 20,
+        right: 20,
+        bottom: 30,
+        left: 50
+    },
+    width = 760 - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
+
+    var parseDate = d3.time.format("%d-%b-%y").parse;
+
+    var x = d3.scale.linear()
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+
+    var line = d3.svg.line()
+        .x(function(d) {
+        return x(d.day);
+    })
+        .y(function(d) {
+        return y(d.prob);
+    });
+
+    var svg = d3.select("div.container").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    x.domain([1, 2]);
+    y.domain([0, 100]);
+
+    var d3x = svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+    svg.append("path")
+        .attr("class", "line");
+    
+</script>
+  
+
+
+
+
+
+</body></html>
