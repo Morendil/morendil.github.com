@@ -2,6 +2,9 @@
 layout: default
 title: Fact and folklore in software engineering
 ---
+
+** See [this](http://leanpub.com/leprechauns) instead. I no longer stand by this article, and the book offers a much improved version of the critique. **
+
 # Fact and folklore in software engineering
 
 The trouble with opinions is that everyone has their own; you can always find one to suit any given prejudice. "Test-driven development reduces defect count", says one expert; "test-driven development will wreck your architecture", says the next.
