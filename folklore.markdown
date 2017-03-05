@@ -3,7 +3,7 @@ layout: default
 title: Fact and folklore in software engineering
 ---
 
-** See [this](http://leanpub.com/leprechauns) instead. I no longer stand by this article, and the book offers a much improved version of the critique. **
+**See [this](http://leanpub.com/leprechauns) instead. I no longer stand by this article, and the book offers a much improved version of the critique.**
 
 # Fact and folklore in software engineering
 
